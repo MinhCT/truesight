@@ -24,30 +24,23 @@ class TapYoutubePersona(Tap):
     # TODO: Update this section with the actual config values you expect:
     config_jsonschema = th.PropertiesList(
         th.Property(
-            "auth_token",
+            "oauth_token",
             th.StringType(nullable=False),
             required=True,
             secret=True,  # Flag config as protected.
-            title="Auth Token",
-            description="The token to authenticate against YoutubePersona",
+            title="OAuth Token",
+            description="The token to authenticate against Youtube API",
         ),
+        #th.Property(
+            #"start_date",
+            #th.DateTimeType(nullable=True),
+            #description="The earliest record date to sync",
+        #),
         th.Property(
-            "project_ids",
-            th.ArrayType(th.StringType(nullable=False), nullable=False),
-            required=True,
-            title="Project IDs",
-            description="Project IDs to replicate",
-        ),
-        th.Property(
-            "start_date",
-            th.DateTimeType(nullable=True),
-            description="The earliest record date to sync",
-        ),
-        th.Property(
-            "api_url",
+            "youtube_api_url",
             th.StringType(nullable=False),
             title="API URL",
-            default="https://api.mysample.com",
+            default="https://www.googleapis.com/youtube/v3",
             description="The url for the API service",
         ),
     ).to_dict()

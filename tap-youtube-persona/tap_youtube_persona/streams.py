@@ -10,52 +10,55 @@ from tap_youtube_persona.client import YoutubePersonaStream
 #       - Copy-paste as many times as needed to create multiple stream types.
 
 
-class UsersStream(YoutubePersonaStream):
-    """Define custom stream."""
+class SubscriptionsStream(YoutubePersonaStream):
+    """Extract user subscriptions data"""
+    
+    name = "subscriptions"
+    path = "/subscriptions"
+    primary_keys = ["id"]
+    #replication_key = None
 
-    name = "users"
-    path = "/users"
-    primary_keys = ("id",)
-    replication_key = None
-    # Optionally, you may also use `schema_filepath` in place of `schema`:
-    # schema_filepath = SCHEMAS_DIR / "users.json"
     schema = th.PropertiesList(
-        th.Property("name", th.StringType),
-        th.Property(
-            "id",
-            th.StringType,
-            description="The user's system ID",
-        ),
-        th.Property(
-            "age",
-            th.IntegerType,
-            description="The user's age in years",
-        ),
-        th.Property(
-            "email",
-            th.StringType,
-            description="The user's email address",
-        ),
-        th.Property("street", th.StringType),
-        th.Property("city", th.StringType),
-        th.Property(
-            "state",
-            th.StringType,
-            description="State name in ISO 3166-2 format",
-        ),
-        th.Property("zip", th.StringType),
-    ).to_dict()
-
-
-class GroupsStream(YoutubePersonaStream):
-    """Define custom stream."""
-
-    name = "groups"
-    path = "/groups"
-    primary_keys = ("id",)
-    replication_key = "modified"
-    schema = th.PropertiesList(
-        th.Property("name", th.StringType),
         th.Property("id", th.StringType),
-        th.Property("modified", th.DateTimeType),
+        th.Property("snippet", th.ObjectType(
+            th.Property("title", th.StringType),
+            th.Property("description", th.StringType),
+            th.Property("resourceId", th.ObjectType(
+                th.Property("channelId", th.StringType)
+            ))
+        ))
     ).to_dict()
+
+
+    def get_http_request(self, *, page):
+        request = super().get_http_request(page=page)
+        request.params["part"] = "snippet"
+        request.params["mine"] = "true"
+
+        return request
+    
+
+class LikedVideosStream(YoutubePersonaStream):
+    """Extract Liked Videos data"""
+
+    name = "liked_videos"
+    path = "/videos"
+    primary_keys = ["id"]
+
+    schema = th.PropertiesList(
+        th.Property("id", th.StringType),
+        th.Property("snippet", th.ObjectType(
+            th.Property("title", th.StringType),
+            th.Property("categoryId", th.StringType)
+        )),
+        th.Property("contentDetails", th.ObjectType(
+            th.Property("duration", th.StringType)
+        ))
+    ).to_dict()
+
+    def get_http_request(self, *, page):
+        request = super().get_http_request(page=page)
+        request.params["part"] = "snippet,contentDetails"
+        request.params["myRating"] = "like"
+        
+        return request

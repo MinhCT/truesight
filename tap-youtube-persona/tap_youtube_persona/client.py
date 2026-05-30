@@ -35,7 +35,7 @@ class YoutubePersonaStream(RESTStream):
     """YoutubePersona stream class."""
 
     # Update this value if necessary or override `parse_response`.
-    records_jsonpath = "$[*]"
+    records_jsonpath = "$.items[*]"
 
     # Update this value if necessary or override `get_new_paginator`.
     next_page_token_jsonpath = "$.next_page"  # noqa: S105
@@ -46,8 +46,7 @@ class YoutubePersonaStream(RESTStream):
     @property
     def url_base(self) -> str:
         """Return the API URL root, configurable via tap settings."""
-        # TODO: hardcode a value here, or retrieve it from self.config
-        return "https://api.mysample.com"
+        return self.config["youtube_api_url"]
 
     @override
     @property
@@ -57,7 +56,7 @@ class YoutubePersonaStream(RESTStream):
         Returns:
             An authenticator instance.
         """
-        return BearerTokenAuthenticator(token=self.config["auth_token"])
+        return BearerTokenAuthenticator(token=self.config["oauth_token"])
 
     @property
     @override
@@ -69,7 +68,9 @@ class YoutubePersonaStream(RESTStream):
         """
         # If not using an authenticator, you may also provide inline auth headers:
         # headers["Private-Token"] = self.config.get("auth_token")
-        return {}
+        headers = {}
+        headers["Accept"] = "application/json"
+        return headers
 
     @override
     def get_new_paginator(self) -> BaseAPIPaginator | None:

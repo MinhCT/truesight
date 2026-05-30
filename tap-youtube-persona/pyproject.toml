@@ -6,7 +6,7 @@ requires = [
 build-backend = "hatchling.build"
 
 [project]
-name = "banhran-tap-youtube-persona"
+name = "tap-youtube-persona"
 dynamic = ["version"]
 description = "Singer tap for YoutubePersona, built with the Meltano Singer SDK."
 readme = "README.md"
