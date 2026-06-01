@@ -31,16 +31,16 @@ class TapYoutubePersona(Tap):
             title="OAuth Token",
             description="The token to authenticate against Youtube API",
         ),
-        #th.Property(
-            #"start_date",
-            #th.DateTimeType(nullable=True),
-            #description="The earliest record date to sync",
-        #),
+        th.Property(
+            "start_date",
+            th.DateTimeType(nullable=True),
+            description="The earliest record date to sync",
+        ),
         th.Property(
             "youtube_api_url",
             th.StringType(nullable=False),
             title="API URL",
-            default="https://www.googleapis.com/youtube/v3",
+            default="https://youtube.googleapis.com/youtube/v3",
             description="The url for the API service",
         ),
     ).to_dict()
@@ -53,8 +53,8 @@ class TapYoutubePersona(Tap):
             A list of discovered streams.
         """
         return [
-            streams.GroupsStream(self),
-            streams.UsersStream(self),
+            streams.SubscriptionsStream(self),
+            streams.LikedVideosStream(self),
         ]
 
 
