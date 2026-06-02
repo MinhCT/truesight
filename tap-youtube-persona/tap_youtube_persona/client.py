@@ -25,6 +25,7 @@ if TYPE_CHECKING:
     import requests
     from singer_sdk.helpers.types import Context
     from singer_sdk.streams.rest import HTTPRequest, PageContext
+    from tap_youtube_persona.tap import TapYoutubePersona
 
 
 # TODO: Delete this is if not using json files for schema definition
@@ -42,6 +43,11 @@ class YoutubePersonaStream(RESTStream):
 
     schema: ClassVar[StreamSchema] = StreamSchema(SCHEMAS_DIR)
 
+    @property
+    def tap(self) -> "TapYoutubePersona":
+        return self._tap
+
+
     @override
     @property
     def url_base(self) -> str:
@@ -56,7 +62,7 @@ class YoutubePersonaStream(RESTStream):
         Returns:
             An authenticator instance.
         """
-        return BearerTokenAuthenticator(token=self.config["oauth_token"])
+        return BearerTokenAuthenticator(token=self.tap.access_token)
 
     @property
     @override
