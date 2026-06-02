@@ -4,6 +4,7 @@ Make sure your local environment already has the following:
 - uv
 - Python >= 3.10
 
+## How-tos
 1. Navigate to [Google Console](https://console.cloud.google.com).
 2. Create new project if you have not already
 3. Go to [Credentials Page](https://console.cloud.google.com/apis/credentials), create new OAuth 2.0 client, select Desktop App as client type
