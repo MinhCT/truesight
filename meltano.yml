@@ -4,3 +4,35 @@ environments:
 - name: dev
 - name: staging
 - name: prod
+plugins:
+  extractors:
+  - name: tap-youtube-persona
+    namespace: tap_youtube_persona
+    pip_url: -e ./tap-youtube-persona
+    executable: tap-youtube-persona
+    settings:
+    - name: refresh_token
+      kind: string
+      sensitive: true
+    - name: google_client_id
+      kind: string
+      sensitive: true
+    - name: google_client_secret
+      kind: string
+      sensitive: true
+  loaders:
+  - name: target-parquet
+    variant: automattic
+    pip_url: git+https://github.com/Automattic/target-parquet.git
+    config:
+      add_record_metadata: false
+      batch_size_rows: 100
+      destination_path: output/data/raw
+      load_method: append-only
+      max_batch_size: 500
+      max_pyarrow_table_size: 200
+      validate_records: true
+  - name: target-parquet-youtube
+    inherit_from: target-parquet
+    config:
+      destination_path: output/data/raw/youtube
