@@ -1,0 +1,35 @@
+send_anonymous_usage_stats: true
+project_id: "tap-liquipedia-dota2"
+default_environment: test
+requires_meltano: ">=4.0"
+environments:
+- name: test
+plugins:
+  extractors:
+  - name: "tap-liquipedia-dota2"
+    namespace: "tap_liquipedia_dota2"
+    pip_url: -e .
+    capabilities: []
+
+    settings:
+    - name: user_agent
+      kind: string
+      label: User Agent
+      description: Name of the user-agent used to request to Liquipedia API. Required, else will be blocked by the API
+    - name: api_url
+      kind: string
+      label: API URL
+      description: The base url for the Liquipedia API service
+
+    # Required settings here:
+    settings_group_validation:
+    - [user_agent]
+
+    # Default configuration values
+    config:
+      user_agent: LiquipediaDota2Tapper
+
+  loaders:
+  - name: target-jsonl
+    variant: andyh1203
+    pip_url: target-jsonl
